@@ -1,9 +1,9 @@
 module Types where
 
-
+import Prelude
 import Data.Array
 import Data.Int
-import Prelude
+
 
 import Board (Board(..))
 import Data.Either (Either)
@@ -48,7 +48,7 @@ fullBigBoard b = full' b 0
 positionBoard :: Board -> Cell -> BoardNum -> CellNum-> Either String Board
 positionBoard board cell bigIndex index = do 
     case board of 
-        BEmpty -> _
+        BEmpty -> Left _
         BSingle xs -> 
             case fullBoard xs of 
                 True -> Left "Board is full"
@@ -56,14 +56,23 @@ positionBoard board cell bigIndex index = do
                     case updateAt index cell xs of 
                         Nothing -> Left "Invalid index"
                         Just x -> Right BSingle x
-        BWhole xs ->
-            case fullBigBoard xs of 
+        BWhole ys ->
+            case fullBigBoard ys of 
                 True -> Left "Board is full, No one won?"
                 False -> do 
-                    case index xs bigIndex of 
-                        Just x -> do
-                          case updateAt index cell x of 
-                            Nothing -> Left "Invalid index" -- find a way to check the board that was chosen out of th emain board like in the top
-                    -- case updateAt index cell bigIndex cell xs of 
-                    --     Nothing -> Left "Invalid index"
-                    --     Just x -> Right BWhole x
+                    case index ys bigIndex of 
+                        Just (BSingle y) -> 
+                            case fullBoard y of 
+                                True -> Left "Board is full"
+                                False -> do 
+                                    case updateAt index cell y of 
+                                        Nothing -> Left "Invalid index"
+                                        Just xy -> 
+                                            case updateAt bigIndex xy ys of
+                                                Nothing -> Left _
+                                                Just a -> Right BWhole a
+                        Nothing -> Left _
+                
+
+                          
+                    
