@@ -1,17 +1,19 @@
 module Types where
 
-import Prelude
 import Data.Array
 import Data.Int
+import Data.Maybe
+import Prelude
 
+import Board (Board(..), Cell(..))
+import Data.Either (Either(..))
 
-import Board (Board(..))
-import Data.Either (Either)
-import Prim.Boolean (False)
+-- import Prim.Boolean 
 
 
 
 type CellNum = Int
+type BoardNum = Int
 
 fullBoard :: Array Cell -> Boolean
 fullBoard b = full' b 0
@@ -37,41 +39,45 @@ fullBigBoard b = full' b 0
             case uncons xs of 
                 Just {head: x, tail: s} ->
                     case x of
-                        BSingle v ->  
+                        (BSingle v) ->  
                             case fullBoard v of
-                                True -> do
+                                true -> do
                                     full' s (n+1)
-                                False -> False
-                        _ -> False
+                                false -> false
+                        _ -> false
                 Nothing -> n == 9
 
 positionBoard :: Board -> Cell -> BoardNum -> CellNum-> Either String Board
-positionBoard board cell bigIndex index = do 
+positionBoard board cell bigIndex indexC = do 
     case board of 
-        BEmpty -> Left _
+        BEmpty -> Left "Board is empty"
         BSingle xs -> 
             case fullBoard xs of 
-                True -> Left "Board is full"
-                False -> do 
-                    case updateAt index cell xs of 
+                true -> Left "Board is full"
+                false -> do 
+                    case updateAt indexC cell xs of 
                         Nothing -> Left "Invalid index"
-                        Just x -> Right BSingle x
+                        Just x -> Right (BSingle x)
         BWhole ys ->
             case fullBigBoard ys of 
-                True -> Left "Board is full, No one won?"
-                False -> do 
-                    case index ys bigIndex of 
-                        Just (BSingle y) -> 
-                            case fullBoard y of 
-                                True -> Left "Board is full"
-                                False -> do 
-                                    case updateAt index cell y of 
-                                        Nothing -> Left "Invalid index"
-                                        Just xy -> 
-                                            case updateAt bigIndex xy ys of
-                                                Nothing -> Left _
-                                                Just a -> Right BWhole a
-                        Nothing -> Left _
+                true -> Left "Board is full, No one won?"
+                false -> do 
+                    case (index ys bigIndex) of 
+                        Just x -> do
+                            case x of
+                                BSingle y -> 
+                                    case fullBoard y of 
+                                        true -> Left "Board is full"
+                                        false -> do 
+                                            case updateAt indexC cell y of 
+                                                Nothing -> Left "Invalid index"
+                                                Just xy -> do
+                                                    case updateAt bigIndex (BSingle xy) ys of
+                                                        Nothing -> Left "Invalid index"
+                                                        Just a -> Right (BWhole a)
+                                
+                                _ -> Left "Invalid board arrangement" --try to do for an empty board
+                        Nothing -> Left "Not sure why you got here"
                 
 
                           
