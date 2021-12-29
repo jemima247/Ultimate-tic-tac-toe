@@ -22,6 +22,7 @@ to generate this file without the comments in this block.
   , "integers"
   , "lists"
   , "maybe"
+  , "newtype"
   , "numbers"
   , "ordered-collections"
   , "partial"
@@ -37,4 +38,3 @@ to generate this file without the comments in this block.
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
 }
-

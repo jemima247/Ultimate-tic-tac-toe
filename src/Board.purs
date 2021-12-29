@@ -18,11 +18,15 @@ data Board
     = BSingle (Array Cell) -- if it has only one cell then it is a solved board
     -- | BSingle Cell
     | BWhole (Array Board)
-    | BEmpty
+    | BEmpty (Array Cell)
+    -- | BEmpty (Array Board)
 
 derive instance eqBoard :: Eq Board
 derive instance genericBoard :: Generic Board _
 instance showBoard :: Show Board where show x = genericShow x
+
+
+
 
     
      

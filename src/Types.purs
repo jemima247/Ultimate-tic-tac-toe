@@ -11,9 +11,11 @@ import Data.Either (Either(..))
 -- import Prim.Boolean 
 
 
-
+type Step = Board -> Either String Board
 type CellNum = Int
 type BoardNum = Int
+
+
 
 fullBoard :: Array Cell -> Boolean
 fullBoard b = full' b 0
@@ -50,7 +52,10 @@ fullBigBoard b = full' b 0
 positionBoard :: Board -> Cell -> BoardNum -> CellNum-> Either String Board
 positionBoard board cell bigIndex indexC = do 
     case board of 
-        BEmpty -> Left "Board is empty"
+        BEmpty xs -> do
+            case updateAt indexC cell xs of 
+                Nothing -> Left "Invalid index"
+                Just x -> Right (BSingle x)
         BSingle xs -> 
             case fullBoard xs of 
                 true -> Left "Board is full"
@@ -75,7 +80,10 @@ positionBoard board cell bigIndex indexC = do
                                                     case updateAt bigIndex (BSingle xy) ys of
                                                         Nothing -> Left "Invalid index"
                                                         Just a -> Right (BWhole a)
-                                
+                                BEmpty xs -> do
+                                    case updateAt indexC cell xs of 
+                                        Nothing -> Left "Invalid index"
+                                        Just x -> Right (BSingle x)
                                 _ -> Left "Invalid board arrangement" --try to do for an empty board
                         Nothing -> Left "Not sure why you got here"
                 
