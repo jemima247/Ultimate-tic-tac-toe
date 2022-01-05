@@ -22,7 +22,7 @@ import Text.Parsing.StringParser (Parser, runParser, try)
 import Text.Parsing.StringParser.CodeUnits (noneOf, skipSpaces, string)
 import Text.Parsing.StringParser.Combinators (many1, sepBy, sepBy1)
 import Text.Parsing.StringParser.Combinators as Comb
-import XORules (cellIndex, check)
+import XORules (cellIndex, cellValue, check)
 
 data CellP = Atom String | CList (List CellP)
 
@@ -78,7 +78,9 @@ play board inputs = plays board inputs
                         log $ showBoard bd'
                         case check bd' x of
                             Left e -> logShow e
-                            Right bd'' -> plays bd'' s
+                            Right bd'' -> case bd'' of 
+                                BWin x -> logShow (cellValue x )
+                                _ -> plays bd'' s
             Nothing -> logShow "All inputs processed"
 -- derive instance eqplays :: Eq plays
 -- derive instance genericplays :: Generic plays _

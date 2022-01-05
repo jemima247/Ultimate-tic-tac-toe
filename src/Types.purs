@@ -86,6 +86,7 @@ positionBoard board cell bigIndex indexC = do
                                         Just x -> Right (BSingle x)
                                 _ -> Left "Invalid board arrangement" --try to do for an empty board
                         Nothing -> Left "Not sure why you got here"
+        BWin _ -> Left "Already won"
                 
 
                           

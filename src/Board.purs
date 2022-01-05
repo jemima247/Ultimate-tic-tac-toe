@@ -23,6 +23,7 @@ data Board
     = BSingle (Array Cell) -- if it has only one cell then it is a solved board
     -- | BSingle Cell
     | BWhole (Array Board)
+    | BWin Cell 
     | BEmpty (Array Cell)
     -- | BEmpty (Array Board)
 
@@ -50,8 +51,24 @@ showBoard board = case board of
                             CEmpty _ -> "|" <> show x <> "" <> showBoard' s (a + 1)
                             _ -> "|  " <> show x <> "  " <> showBoard' s (a + 1)
                         _ -> ""
-    BWhole arr -> "not done yet"
+    BWhole xs ->  "__________________________________\n" <> showBoardB' xs 1
+        where
+            showBoardB' :: Array Board -> Int -> String
+            showBoardB' xs a =  
+                if a == 3 then 
+                    case uncons xs of
+                        Just {head : x, tail : s} -> case x of
+                            BEmpty _ -> "|" <> showBoard x <> "|\n" <> "__________________________________\n" <> showBoardB' s 1
+                            _ -> "|  " <> showBoard x <> "  |\n" <> "__________________________________\n" <> showBoardB' s 1
+                        _ -> ""
+                else
+                    case uncons xs of
+                        Just {head : x, tail : s} -> case x of
+                            BEmpty _ -> "|" <> showBoard x <> "" <> showBoardB' s (a + 1)
+                            _ -> "|  " <> showBoard x <> "  " <> showBoardB' s (a + 1)
+                        _ -> ""
     BEmpty arr -> "not done yet"
+    BWin cell -> "not done yet"
 
 
 
